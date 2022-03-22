@@ -1,0 +1,172 @@
+// Header files for input/output modifiers, ability to use string, and in/out stream modifiers.
+#include <iostream>
+#include <string>
+#include <iomanip>
+// using namespace std allows the omition of std:: before in/out streams
+using namespace std;
+// declaring main program
+int main()
+{
+    // \/ initilizing and declaring space for variables to store information
+    string name;
+    int months, counter = 1, response, tdu, x, a = 1;
+    double kWh, tduC = 0, eC = 0, tkWh = 0, tMC = 0, tC = 0, tTDUC = 0, tEC = 0;
+    cout << fixed << showpoint << setprecision(2);
+    // ^ setting outputs of the program to 2 decimal points
+    cout << "To run program enter 1, to exit enter 0" << endl;
+    // ^ prompting user to enter 1 to start or 0 to exit.
+    cin >> response;
+    // ^ taking in the response from user to start or exit program
+    cout << endl;
+    // ^ moving cursor to next line
+    while (response != 0) {
+    // ^ starting a while loop that continues as long as the user doesn't enter 0 to exit when prompted
+        x = 0;
+        months = 0;
+        counter = 1;
+        tduC = 0;
+        eC = 0;
+        tkWh = 0;
+        tMC = 0;
+        tC = 0;
+        tTDUC = 0;
+        tEC = 0;
+        a = 1;
+        // ^ the previous 10 lines reset these variables to their starting numbers to be reused for another person's billing info
+        cout << "Please enter a name: ";
+        cin >> name;
+        cout << endl;
+        // ^ prompting user to enter a name, taking in the input and putting it into the variable name then moving the cursor to the next line
+        cout << "Please enter the number of Months (between 1-12) using only integers: ";
+        cin >> months;
+        cout << endl;
+        // ^ Prompting user to enter a number for months and taking the input and putting it in months
+        while (months < 1 || months > 12) {
+            cin.clear();
+            // clears and input failure
+            cin.ignore(100, '\n');
+            // ignores the rest of the previous input
+            cout << "\nThat is an invalid input, please enter the number of Months (between 1-12) using only integers: ";
+            cin >> months;
+            cout << endl;
+        }
+        // ^ if the input is not 1-12 the user is prompted to reenter the input
+        // ^ prompting the user to enter the # of months to be calculated, setting the varible months to the users input then moving the cursor to the next line
+        cout << "Please enter a integer, 1 for ONCOR, 2 for CENTERPOINT ENERGY, 3 for AEP TEXAS CENTRAL, 4 for AEP TEXAS NORTH, 5 for TEXAS - NEW MEXICO POWER: ";
+        cin >> tdu;
+        cout << endl;
+        while (tdu < 1 || tdu > 5) {
+            cin.clear();
+            // ^ clears any input failure
+            cin.ignore(100, '\n');
+            // ^ ignores all of previous input
+            cout << "\nThat is an invalid input, please enter 1 for ONCOR, 2 for CENTERPOINT ENERGY, 3 for AEP TEXAS CENTRAL, 4 for AEP TEXAS NORTH, 5 for TEXAS - NEW MEXICO POWER, using integers: ";
+            cin >> tdu;
+            cout << endl;
+        }
+            // ^^ asking the user to input a number 1-5 for the respective TDU; setting varible tdu to the user's input, the moving the cursor
+        // ^ If the input was not between an integer 1-5, the user will be prompted for another input.
+        while (counter <= months) {
+            // ^ starting a while loop to calculate and output every month's charges
+            cout << "Please enter a positive number for the kWh used during month " << a << ", using numbers: ";
+            cin >> kWh;
+            cout << endl;
+            while (cin.fail() || kWh < 0 || kWh > 999999999) {
+                cin.clear();
+                cin.ignore(100, '\n');
+                cout << "\nThat is an invalid input, please enter a positive number for the kWh used during month " << a << ", using numbers: ";
+                cin >> kWh;
+                cout << endl;
+            }
+            // ^ outputs an error message and prompts the user to re-enter kWh if the input was negative, over 999999999 or not a number.
+            // assigns new input to kWh and checks to see if the input is useable.
+
+
+           
+
+            tkWh += kWh;
+            // ^ asking the user to enter the kWh used per month, taking that input and setting the variable kWh to it, then moving cursor
+            if (tdu == 1) {
+                tduC = 3.42 + .038447 * kWh;
+            }
+            else
+                if (tdu == 2) {
+                    tduC = 5.47 + .040312 * kWh;
+                }
+                else
+                    if (tdu == 3) {
+                        tduC = 9 + .044846 * kWh;
+                    }
+                    else
+                        if (tdu == 4) {
+                            tduC = 10.53 + .040199 * kWh;
+                        }
+                        else
+                            if (tdu == 5) {
+                                tduC = 7.85 + .048321 * kWh;
+                            }
+                            else {
+                                cout << "Please enter 1 for ONCOR, 2 for CENTERPOINT ENERGY, 3 for AEP TEXAS CENTRAL, 4 for AEP TEXAS NORTH, 5 for TEXAS - NEW MEXICO POWER after restarting the program.";
+                                cout << endl;
+                                x = 1;
+                                break;
+                            }
+            // ^ for inputs into tdu of 1-5 the respective TDU's charges are calculated based on the kWh entered for every month up to the number of months chosen by the user. The last if loop is a safety net incase the user enters something other than 1-5.
+            // ^ if the user enters something other than 1-5 the error message will be ouputed x will become 1 and the program will output a restart message
+            tTDUC += tduC;
+            // ^ adding the monthly TDU charges to the running total of TDU charges
+            if (kWh < 1200) {
+                eC = kWh * .073 + 9.95;
+            }
+            else
+            // ^ for months with kWh less than 1200 9.95 is the base charge then $.073 per kWh will be calculated
+                if (kWh <= 2000) {
+                    eC = (kWh - 1200) * .037 + 1200 * .073 + 9.95;
+                }
+            // ^ for months with kWh between 1200 and 2000, the first 1200 kWh will be charged at .073, the remaining kWh
+            // will be charged as .037 up to 2000. Then the base charge of 9.95 is added
+                else
+                    if (tkWh > 2000) {
+                        eC =  (kWh - 2000) * .077 + 800 * .037 + 1200 * .073 + 9.95;
+                    }
+            // ^ for months with kWh over 2000 all kWh over 2000 is charged at a $.077 per kWh 800 kWh is charged at $.037
+            // per kWh, and 1200 kWh is charged at $.073 per kWh, then base pay of 9.95 is added
+            if (kWh >= 1200) {
+                eC -= 15;
+            }
+            // ^ for months with kWh over 1200 a $15 discount will be added 
+            cout << name << endl << " Total monthly TDU charges: " << tduC << endl;
+            // ^ outputing the name inputed earlier in the program, then outputing the total of TDU charges for the month with label
+            cout << "Total monthly electric charges: " << eC << endl;
+            // ^ outputting the month's electric company's charges with label
+            tEC += eC;
+            // ^ adding the month's total to the running total of the electric company's charges
+            tMC = eC + tduC;
+            // ^ calculating this month's total 
+            tC += tMC;
+            // adding this month's total to the running total cost 
+            cout << "Total Monthly Cost: " << tMC << endl;
+            // outputting this month's total costs with label
+            counter += 1;
+            // adds one to the counter so that the program will stop after reaching the end of the last month that needs to be calculated
+            a += 1;
+            // the number after month in the user prompt is increased by one 
+
+        }
+        if (x == 1) {
+            cout << "Enter 1 if you want to run the program again, and 0 if you want to exit: ";
+            cin >> response;
+            // ^ asks the user if they would like to restart the program due to the input for tdu not being 1-5
+        }
+        else {
+            cout << name << " Total TDU charges: " << tTDUC << " Total electrical charges: " << tEC << " Total charges for all months: " << tC << endl;
+            cout << "Enter 1 if you want to run the program again, and 0 if you want to exit: ";
+            cin >> response;
+            cout << endl;
+        }
+        // after all the months are calculated, this outputs the name, total  of tdu charges, total of electrical company charges and 
+        // total of all charges for all months, then asks the user if they would like to restart the program
+    }
+    return 0;
+}
+// ends the program
